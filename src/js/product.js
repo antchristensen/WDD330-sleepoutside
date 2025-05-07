@@ -4,14 +4,9 @@ import ProductData from "./ProductData.mjs";
 const dataSource = new ProductData("tents");
 
 function addProductToCart(product) {
-  // Get the current cart or initialize a new array
-  let cart = JSON.parse(localStorage.getItem("so-cart")) || [];
-
-  // Add the new product
-  cart.push(product);
-
-  // Save updated cart using your helper
-  setLocalStorage("so-cart", cart);
+  const cartItems = getLocalStorage("so-cart") || []; // get cart array of items from local storage if null set to empty array
+  cartItems.push(product);
+  setLocalStorage("so-cart", cartItems);
 }
 
 // add to cart button event handler
