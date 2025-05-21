@@ -8,13 +8,13 @@ export default class ProductDetails {
   }
 
   async init() {
-    // Get product data from the API
+    
     this.product = await this.dataSource.findProductById(this.productId);
 
-    // Render product HTML
+    
     this.renderProductDetails();
 
-    // Attach "Add to Cart" functionality
+    
     document
       .getElementById('addToCart')
       .addEventListener('click', this.addProductToCart.bind(this));
