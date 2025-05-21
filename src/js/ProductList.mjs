@@ -1,14 +1,17 @@
-import { renderListWithTemplate } from './utils.mjs';
+import { renderListWithTemplate, setLocalStorage } from './utils.mjs';
 
 function productCardTemplate(product) {
-  return `<li class="product-card">
-    <a href="product_pages/?product=${product.Id}">
-      <img src="${product.Image}" alt="Image of ${product.NameWithoutBrand}">
-      <h2 class="card__brand">${product.Brand.Name}</h2>
-      <h3 class="card__name">${product.NameWithoutBrand}</h3>
-      <p class="product-card__price">$${product.FinalPrice}</p>
-    </a>
-  </li>`;
+  const template = `
+    <li class="product-card">
+      <a href="/product_pages/index.html?product=${product.Id}" class="product-card__link">
+        <img src="${product.Images?.PrimaryMedium}" alt="${product.Name}" />
+        <h2 class="card__name">${product.NameWithoutBrand}</h2>
+        <p class="product-card__brand">${product.Brand?.Name}</p>
+        <p class="product-card__price">$${product.FinalPrice}</p>
+      </a>
+      <button class="product-card__add" data-id="${product.Id}">Add to Cart</button>
+    </li>`;
+  return template;
 }
 
 export default class ProductList {
@@ -19,19 +22,29 @@ export default class ProductList {
   }
 
   async init() {
-    const list = await this.dataSource.getData();
-
-    // Only show products with detail pages
-    const allowedIds = ['880RR', '985RF', '985PR', '344YJ'];
-    const filteredList = list.filter(item => allowedIds.includes(item.Id));
-
-    console.log('Product list loaded:', filteredList);
-
-    this.renderList(filteredList);
+    const list = await this.dataSource.getData(this.category);
+    this.renderList(list);
+    this.addListeners();
   }
 
-  renderList(productList) {
-    renderListWithTemplate(productCardTemplate, this.listElement, productList, 'afterbegin', true);
+  renderList(list) {
+    renderListWithTemplate(productCardTemplate, this.listElement, list);
+  }
+
+  addListeners() {
+    const buttons = document.querySelectorAll('.product-card__add');
+    buttons.forEach(button => {
+      button.addEventListener('click', async (e) => {
+        const product = await this.dataSource.findProductById(e.target.dataset.id);
+        this.addToCart(product);
+      });
+    });
+  }
+
+  addToCart(product) {
+    let cart = JSON.parse(localStorage.getItem('so-cart')) || [];
+    cart.push(product);
+    setLocalStorage('so-cart', cart);
   }
 }
 

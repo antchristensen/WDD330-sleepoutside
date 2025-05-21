@@ -41,3 +41,12 @@ export async function loadHeaderFooter() {
   renderWithTemplate(header, document.getElementById("main-header"));
   renderWithTemplate(footer, document.getElementById("main-footer"));
 }
+
+export function convertToJson(res) {
+  if (res.ok) {
+    return res.json();
+  } else {
+    throw new Error("Bad Response");
+  }
+}
+
