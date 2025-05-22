@@ -5,4 +5,3 @@ loadHeaderFooter();
 
 const cart = new ShoppingCart(".product-list");
 cart.init();
-
