@@ -297,3 +297,20 @@ footer {
   font-weight: bold;
   margin: 0;
 }
+
+.cart-remove-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  color: red;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.cart-card {
+  position: relative;
+}
