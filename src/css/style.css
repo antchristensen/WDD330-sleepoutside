@@ -314,3 +314,55 @@ footer {
 .cart-card {
   position: relative;
 }
+
+.cart-card {
+  position: relative;
+}
+
+.cart-remove-btn {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: red;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.cart-summary {
+  margin-top: 2rem;
+  text-align: right;
+  padding-right: 2rem;
+}
+
+.checkout-button {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5em 1.5em;
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 4px;
+}
+ 
+.checkout-form {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 2fr 1fr;
+  align-items: start;
+}
+
+.checkout-form form,
+.order-summary {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 4px;
+}
+
+.order-summary p {
+  margin: 0.5rem 0;
+}
