@@ -13,7 +13,7 @@ function cartItemTemplate(item) {
 
   return `
     <li class="cart-card divider" data-id="${item.Id}">
-      <button class="cart-remove-btn" data-id="${item.Id}" aria-label="Remove ${name} from cart">✖</button>
+      <button class="cart-remove-btn" data-id="${item.Id}" aria-label="Remove ${name}">❌</button>
       <a href="/product_pages/index.html?product=${item.Id}" class="cart-card__image">
         <img src="${image}" alt="${name}" />
       </a>
@@ -40,20 +40,38 @@ export default class ShoppingCart {
   }
 
   renderCartContents() {
-    renderListWithTemplate(
-      cartItemTemplate,
-      this.listElement,
-      this.cartItems,
-      "afterbegin",
-      true
-    );
+    // Clear previous summary
+    const oldSummary = document.querySelector(".cart-summary");
+    if (oldSummary) oldSummary.remove();
+
+    // Render products
+    renderListWithTemplate(cartItemTemplate, this.listElement, this.cartItems, "afterbegin", true);
     this.attachRemoveListeners();
+
+    // Render summary
+    const subtotal = this.cartItems.reduce((sum, item) => sum + item.FinalPrice, 0);
+    const tax = +(subtotal * 0.06).toFixed(2);
+    const shipping = 5.0;
+    const total = +(subtotal + tax + shipping).toFixed(2);
+
+    const summary = document.createElement("div");
+    summary.classList.add("cart-summary");
+    summary.innerHTML = `
+      <hr />
+      <p><strong>Subtotal:</strong> $${subtotal.toFixed(2)}</p>
+      <p><strong>Tax (6%):</strong> $${tax}</p>
+      <p><strong>Shipping:</strong> $${shipping.toFixed(2)}</p>
+      <p><strong>Total:</strong> $${total}</p>
+      <a href="/checkout/index.html" class="checkout-button">Proceed to Checkout</a>
+    `;
+
+    this.listElement.parentElement.appendChild(summary);
   }
 
   attachRemoveListeners() {
-    const removeButtons = document.querySelectorAll(".cart-remove-btn");
-    removeButtons.forEach((button) => {
-      button.addEventListener("click", (e) => {
+    const buttons = document.querySelectorAll(".cart-remove-btn");
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
         const productId = e.target.dataset.id;
         this.removeItem(productId);
       });
@@ -63,6 +81,6 @@ export default class ShoppingCart {
   removeItem(productId) {
     this.cartItems = this.cartItems.filter((item) => item.Id !== productId);
     setLocalStorage("so-cart", this.cartItems);
-    this.renderCartContents(); // refresh the cart
+    this.renderCartContents();
   }
 }
