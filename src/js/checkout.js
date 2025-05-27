@@ -10,14 +10,20 @@ document.getElementById("zip").addEventListener("blur", () => {
   checkout.calculateOrderTotal();
 });
 
-document.getElementById("checkoutForm").addEventListener("submit", function (e) {
+document.getElementById("checkoutForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
   if (!e.target.checkValidity()) {
-    e.preventDefault();
     alert("Please fill out all fields.");
-  } else {
-    e.preventDefault();
-    alert("Order placed successfully!");
+    return;
+  }
+
+  try {
+    const result = await checkout.checkout(e.target);
+    alert("✅ Order placed successfully!");
     localStorage.removeItem("so-cart");
     window.location.href = "/index.html";
+  } catch {
+    alert("❌ There was a problem submitting your order.");
   }
 });
