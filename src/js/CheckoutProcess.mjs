@@ -1,4 +1,4 @@
-import { getLocalStorage } from "./utils.mjs";
+import { getLocalStorage, alertMessage } from "./utils.mjs";
 import ExternalServices from "./ExternalServices.mjs";
 
 export default class CheckoutProcess {
@@ -13,41 +13,37 @@ export default class CheckoutProcess {
     this.services = new ExternalServices();
   }
 
-  init() {
-    this.list = getLocalStorage(this.key) || [];
-    this.calculateItemSubTotal();
-  }
+init() {
+  this.list = getLocalStorage(this.key) || [];
+  this.calculateItemSummary();    
+  this.calculateOrderTotal();     
+}
 
-  calculateItemSubTotal() {
-    this.itemTotal = this.list.reduce((sum, item) => sum + item.FinalPrice, 0);
 
-    const subtotal = document.querySelector(`${this.outputSelector} #subtotal`);
-    const numItems = document.querySelector(`${this.outputSelector} #num-items`);
-    if (subtotal) subtotal.innerText = `$${this.itemTotal.toFixed(2)}`;
-    if (numItems) numItems.innerText = this.list.length;
+  calculateItemSummary() {
+    this.itemTotal = this.list.reduce((acc, item) => acc + item.FinalPrice, 0);
+    this.displayOrderTotals(); // Display subtotal right away
   }
 
   calculateOrderTotal() {
     const itemCount = this.list.length;
-    this.tax = +(this.itemTotal * 0.06).toFixed(2);
-    this.shipping = itemCount > 0 ? 10 + (itemCount - 1) * 2 : 0;
-    this.orderTotal = +(this.itemTotal + this.tax + this.shipping).toFixed(2);
-
+    this.tax = this.itemTotal * 0.06;
+    this.shipping = 10 + (itemCount > 1 ? (itemCount - 1) * 2 : 0);
+    this.orderTotal = this.itemTotal + this.tax + this.shipping;
     this.displayOrderTotals();
   }
 
   displayOrderTotals() {
-    const tax = document.querySelector(`${this.outputSelector} #tax`);
-    const shipping = document.querySelector(`${this.outputSelector} #shipping`);
-    const orderTotal = document.querySelector(`${this.outputSelector} #order-total`);
-    if (tax) tax.innerText = `$${this.tax.toFixed(2)}`;
-    if (shipping) shipping.innerText = `$${this.shipping.toFixed(2)}`;
-    if (orderTotal) orderTotal.innerText = `$${this.orderTotal.toFixed(2)}`;
+    const selector = this.outputSelector;
+    document.querySelector(`${selector} #num-items`).innerText = this.list.length;
+    document.querySelector(`${selector} #subtotal`).innerText = `$${this.itemTotal.toFixed(2)}`;
+    document.querySelector(`${selector} #tax`).innerText = `$${this.tax.toFixed(2)}`;
+    document.querySelector(`${selector} #shipping`).innerText = `$${this.shipping.toFixed(2)}`;
+    document.querySelector(`${selector} #order-total`).innerText = `$${this.orderTotal.toFixed(2)}`;
   }
 
-  
   packageItems(items) {
-    return items.map((item) => ({
+    return items.map(item => ({
       id: item.Id,
       name: item.Name,
       price: item.FinalPrice,
@@ -55,21 +51,12 @@ export default class CheckoutProcess {
     }));
   }
 
-  
-  formDataToJSON(formElement) {
-    const formData = new FormData(formElement),
-      convertedJSON = {};
-
-    formData.forEach(function (value, key) {
-      convertedJSON[key] = value;
-    });
-
-    return convertedJSON;
-  }
-
-  
   async checkout(form) {
-    const order = this.formDataToJSON(form);
+    const formData = new FormData(form);
+    const order = {};
+    formData.forEach((value, key) => {
+      order[key] = value;
+    });
 
     order.orderDate = new Date().toISOString();
     order.items = this.packageItems(this.list);
@@ -77,12 +64,6 @@ export default class CheckoutProcess {
     order.shipping = this.shipping;
     order.tax = this.tax.toFixed(2);
 
-    try {
-      const result = await this.services.submitOrder(order);
-      return result;
-    } catch (err) {
-      console.error("Checkout failed:", err);
-      throw err;
-    }
+    return await this.services.submitOrder(order);
   }
 }

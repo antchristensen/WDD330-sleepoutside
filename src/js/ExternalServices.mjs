@@ -24,11 +24,17 @@ export default class ExternalServices {
       body: JSON.stringify(order)
     });
 
+    const jsonResponse = await response.json();
+
     if (!response.ok) {
-      throw new Error("❌ Failed to submit order.");
+      
+      throw {
+        name: 'servicesError',
+        message: jsonResponse  
+      };
     }
 
-    return await response.json();
+    return jsonResponse;
   }
 }
 

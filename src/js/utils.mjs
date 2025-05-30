@@ -42,11 +42,37 @@ export async function loadHeaderFooter() {
   renderWithTemplate(footer, document.getElementById("main-footer"));
 }
 
-export function convertToJson(res) {
+
+export async function convertToJson(res) {
+  const jsonResponse = await res.json();
   if (res.ok) {
-    return res.json();
+    return jsonResponse;
   } else {
-    throw new Error("Bad Response");
+    throw {
+      name: 'servicesError',
+      message: jsonResponse
+    };
   }
+}
+
+
+export function alertMessage(message, scroll = true) {
+  const alert = document.createElement("div");
+  alert.classList.add("alert");
+  alert.innerHTML = `
+    <span>${message}</span>
+    <span class="alert-close" role="button" aria-label="close">✖</span>
+  `;
+
+  alert.addEventListener("click", function (e) {
+    if (e.target.classList.contains("alert-close") || e.target.innerText === "✖") {
+      alert.remove();
+    }
+  });
+
+  const main = document.querySelector("main");
+  main.prepend(alert);
+
+  if (scroll) window.scrollTo(0, 0);
 }
 

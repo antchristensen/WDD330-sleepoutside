@@ -1,29 +1,23 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>Sleep Outside | Checkout</title>
-
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="../css/style.css" />
     <script type="module" src="../js/checkout.js"></script>
-
   </head>
 
   <body>
     <header id="main-header" class="divider">...</header>
 
     <main class="divider">
-      <section class="checkout-form">
-        <h2>Checkout</h2>
+      <section class="checkout-layout">
         <form id="checkoutForm">
           <fieldset>
             <legend>Customer Name</legend>
-            <label>First Name: <input type="text" name="firstName" required /></label>
-            <label>Last Name: <input type="text" name="lastName" required /></label>
+            <label>First Name: <input type="text" name="fname" required /></label>
+            <label>Last Name: <input type="text" name="lname" required /></label>
           </fieldset>
 
           <fieldset>
@@ -36,9 +30,9 @@
 
           <fieldset>
             <legend>Payment</legend>
-            <label>Credit Card Number: <input type="text" name="ccNum" required /></label>
-            <label>Expiration Date: <input type="month" name="exp" required /></label>
-            <label>Security Code: <input type="text" name="cvv" required /></label>
+            <label>Credit Card Number: <input type="text" name="cardNumber" required /></label>
+            <label>Expiration Date: <input type="text" name="expiration" placeholder="MM/YY" required />
+            <label>Security Code: <input type="text" name="code" required /></label>
           </fieldset>
 
           <button type="submit">Place Order</button>
@@ -55,7 +49,7 @@
       </section>
     </main>
 
-
     <footer id="main-footer">...</footer>
   </body>
 </html>
+
