@@ -1,4 +1,4 @@
-import { getLocalStorage, setLocalStorage } from "./utils.mjs";
+import { getLocalStorage, setLocalStorage, alertMessage } from "./utils.mjs";
 
 export default class ProductDetails {
   constructor(productId, dataSource) {
@@ -12,9 +12,8 @@ export default class ProductDetails {
       this.product = await this.dataSource.findProductById(this.productId);
       console.log("✅ Fetched product:", this.product);
 
-      this.renderProductDetails(); // First: render the HTML
+      this.renderProductDetails();
 
-      // Then: attach the event listener AFTER the button is in the DOM
       const addToCartBtn = document.getElementById("addToCart");
       if (addToCartBtn) {
         addToCartBtn.addEventListener("click", this.addProductToCart.bind(this));
@@ -60,7 +59,10 @@ export default class ProductDetails {
     cartItems.push(this.product);
     setLocalStorage("so-cart", cartItems);
     console.log("🛒 Product added to cart:", this.product);
+
+    alertMessage("🛒 Item added to cart!");
   }
 }
+
 
 

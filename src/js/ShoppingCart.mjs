@@ -40,18 +40,20 @@ export default class ShoppingCart {
   }
 
   renderCartContents() {
-    // Clear previous summary
+    
     const oldSummary = document.querySelector(".cart-summary");
     if (oldSummary) oldSummary.remove();
 
-    // Render products
+    
     renderListWithTemplate(cartItemTemplate, this.listElement, this.cartItems, "afterbegin", true);
     this.attachRemoveListeners();
 
-    // Render summary
+    
     const subtotal = this.cartItems.reduce((sum, item) => sum + item.FinalPrice, 0);
     const tax = +(subtotal * 0.06).toFixed(2);
-    const shipping = 5.0;
+    const itemCount = this.cartItems.length;
+    const shipping = itemCount > 0 ? 10 + (itemCount - 1) * 2 : 0;
+
     const total = +(subtotal + tax + shipping).toFixed(2);
 
     const summary = document.createElement("div");
