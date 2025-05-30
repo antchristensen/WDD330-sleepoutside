@@ -1,4 +1,4 @@
-import { renderListWithTemplate, setLocalStorage } from './utils.mjs';
+import { renderListWithTemplate, setLocalStorage, alertMessage } from './utils.mjs';
 
 function productCardTemplate(product) {
   const template = `
@@ -45,6 +45,18 @@ export default class ProductList {
     let cart = JSON.parse(localStorage.getItem('so-cart')) || [];
     cart.push(product);
     setLocalStorage('so-cart', cart);
+
+    
+    alertMessage("🛒 Item added to cart!");
+
+    
+    const cartIcon = document.querySelector(".cart-icon");
+    if (cartIcon) {
+      cartIcon.classList.add("animate-cart");
+      setTimeout(() => {
+        cartIcon.classList.remove("animate-cart");
+      }, 800);
+    }
   }
 }
 

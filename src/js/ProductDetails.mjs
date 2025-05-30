@@ -61,6 +61,15 @@ export default class ProductDetails {
     console.log("🛒 Product added to cart:", this.product);
 
     alertMessage("🛒 Item added to cart!");
+
+    
+    const cartIcon = document.querySelector(".cart-icon");
+    if (cartIcon) {
+      cartIcon.classList.add("animate-cart");
+      setTimeout(() => {
+        cartIcon.classList.remove("animate-cart");
+      }, 800); 
+    }
   }
 }
 
